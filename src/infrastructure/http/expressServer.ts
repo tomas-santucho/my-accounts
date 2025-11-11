@@ -9,7 +9,9 @@ export const startServer = () => {
 
     });
 
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
         console.log(`🚀 Server running at http://localhost:${port}`);
     });
+
+    return { app, server };
 }
