@@ -2,6 +2,7 @@ import express from "express";
 import pinoHttp from "pino-http";
 import {logger} from "./logger/logger";
 import {globalRateLimiter} from "./rate-limiter/rateLimiter";
+import {responseTimeLogger} from "./middlewares/responseTimeLogger";
 
 export const startServer = () => {
     const app = express();
@@ -9,6 +10,7 @@ export const startServer = () => {
     app.use(pinoHttp({ logger }));
     app.use(express.json());
     app.use(globalRateLimiter);
+    app.use(responseTimeLogger);
 
     app.get("/", (req, res) => {
         req.log.info("Root route hit");
