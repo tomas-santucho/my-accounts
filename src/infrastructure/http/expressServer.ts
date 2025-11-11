@@ -1,17 +1,18 @@
-import express, {type Request, type Response } from "express";
+// src/infrastructure/http/expressServer.ts
+import express from "express";
+import pinoHttp from "pino-http";
+import {logger} from "./logger/logger";
 
 export const startServer = () => {
     const app = express();
-    const port = 3000;
 
-    app.get("/", (_req: Request, res: Response) => {
-        res.send("Hello TypeScript + Express!");
+    app.use(pinoHttp({ logger }));
 
+    app.get("/", (req, res) => {
+        req.log.info("Root route hit");
+        res.json({ msg: "Hello from Pino!" });
     });
 
-    const server = app.listen(port, () => {
-        console.log(`🚀 Server running at http://localhost:${port}`);
-    });
-
-    return { app, server };
-}
+    const port = process.env["PORT"] || 3000;
+    app.listen(port, () => logger.info(`🚀 Server running on port ${port}`));
+};
