@@ -2,22 +2,27 @@
   "name": "myaccountsts",
   "author": "Tomas Santucho",
   "module": "src/index.ts",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "private": true,
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "build": "tsc",
     "start": "bun dist/index.js",
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "eslint ."
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@types/bun": "latest",
     "@types/cookie-parser": "^1.4.10",
     "@types/express-rate-limit": "^6.0.2",
     "@types/pino": "^7.0.5",
     "@types/response-time": "^2.3.9",
     "@types/supertest": "^6.0.3",
+    "globals": "^16.5.0",
+    "jiti": "^2.6.1",
     "supertest": "^7.1.4",
+    "typescript-eslint": "^8.46.4",
     "vitest": "^4.0.8"
   },
   "peerDependencies": {
@@ -30,6 +35,7 @@
     "cors": "^2.8.5",
     "debug": "4.3.4",
     "dotenv": "^17.2.3",
+    "eslint": "^9.39.1",
     "express": "^4.18.0",
     "express-rate-limit": "^8.2.1",
     "mongodb": "^7.0.0",
