@@ -1,19 +1,15 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import request from 'supertest';
-import { startServer } from '../src/infrastructure/http/expressServer';
-import { Server } from 'http';
+import { createApp } from '../src/infrastructure/http/expressServer';
+import { Application } from 'express';
+import { Db } from 'mongodb';
 
-let app: Express.Application;
-let server: Server;
+let app: Application;
 
 beforeAll(() => {
-  const { app: expressApp, server: httpServer } = startServer();
-  app = expressApp;
-  server = httpServer;
-});
-
-afterAll(() => {
-  server.close();
+  // The / route doesn't use the db, so we can pass a mock/dummy object.
+  const mockDb = {} as Db;
+  app = createApp(mockDb);
 });
 
 describe('GET /', () => {

@@ -1,4 +1,4 @@
-import express from "express";
+import express, {Application} from "express";
 import pinoHttp from "pino-http";
 import {logger} from "./logger/logger";
 import {globalRateLimiter} from "./rate-limiter/rateLimiter";
@@ -8,8 +8,12 @@ import path from "node:path";
 import {Db} from "mongodb";
 import {incomeApi} from "./routes/incomeRoutes";
 
-export const startServer = (port: Number, db: Db) => {
+export const createApp = (db: Db): Application => {
     const app = express();
+
+    app.get('/', (_, res) => {
+        res.send('Hello TypeScript + Express!');
+    });
 
     app.use(pinoHttp({ logger }));
     app.use(express.json());
@@ -51,5 +55,11 @@ export const startServer = (port: Number, db: Db) => {
         next(err);
     });
 
-    app.listen(port, () => logger.info(`🚀 Server running on port ${port}`));
+    return app;
+}
+
+export const startServer = (port: Number, db: Db) => {
+    const app = createApp(db);
+    const server = app.listen(port, () => logger.info(`🚀 Server running on port ${port}`));
+    return {app, server};
 };
