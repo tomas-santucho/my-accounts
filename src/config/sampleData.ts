@@ -1,19 +1,22 @@
-import { Expense } from "../domain/expense/expense";
+import { Transaction } from "../domain/transaction/transaction";
 
-export const sampleExpenses: Omit<Expense, "id" | "createdAt">[] = [
+export const sampleExpenses: Omit<Transaction, "id" | "createdAt">[] = [
     {
+        type: "expense",
         description: "Groceries",
         amount: 50.0,
         category: "Food",
         date: new Date("2025-01-15"),
     },
     {
+        type: "expense",
         description: "Gasoline",
         amount: 30.0,
         category: "Transportation",
         date: new Date("2025-01-16"),
     },
     {
+        type: "expense",
         description: "Movie tickets",
         amount: 25.0,
         category: "Entertainment",

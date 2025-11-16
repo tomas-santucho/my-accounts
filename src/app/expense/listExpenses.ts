@@ -1,7 +1,7 @@
-import {ExpenseRepository} from "../../domain/expense/expenseRepository";
+import {TransactionRepository} from "../../domain/transaction/transactionRepository";
 
 export const listExpenses =
-    (repo: ExpenseRepository) =>
+    (repo: TransactionRepository) =>
         async () => {
-            return repo.findAll();
+            return repo.findAllForCurrentMonth();
         };

@@ -2,12 +2,12 @@ import express from "express";
 import {Db} from "mongodb";
 import {addExpense} from "../../../app/expense/addExpense";
 import {listExpenses} from "../../../app/expense/listExpenses";
-import {mongoExpenseRepo} from "../../db/mongoExpenseRepo";
+import {mongoTransactionRepo} from "../../db/mongoTransactionRepo";
 
 
-export const expenseApi = (db: Db) => {
+export const transactionApi = (db: Db) => {
     const router = express.Router();
-    const repo = mongoExpenseRepo(db)
+    const repo = mongoTransactionRepo(db)
 
     router.use(function (req, res, next) {
         // middleware
