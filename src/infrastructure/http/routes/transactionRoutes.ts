@@ -30,8 +30,10 @@ export const transactionApi = (db: Db) => {
     
     router.post("/expense", async function (req, res) {
         try {
+            // TODO: Replace with authenticated user's ID. For now, using a placeholder.
+            const userId = "placeholder-user-id";
             const {description, amount, category, date} = req.body;
-            const createdExpense = await addExpense(repo)({description, amount, category, date: new Date(date)});
+            const createdExpense = await addExpense(repo)(userId, {description, amount, category, date: new Date(date)});
             res.status(201).json(createdExpense);
         } catch (error) {
             // basic error handling

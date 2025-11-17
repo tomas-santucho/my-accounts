@@ -4,11 +4,12 @@ import dotenv from 'dotenv';
 import {mongoTransactionRepo} from "./infrastructure/db/mongoTransactionRepo";
 import {sampleExpenses} from "./config/sampleData";
 import {createTransaction} from "./domain/transaction/transaction";
+import {getEnvOrThrow} from "./util/envUtils";
 
 dotenv.config();
 
 const port = Number(process.env['PORT']) || 3000;
-const mongoUrl = process.env['MONGO_URI'];
+const mongoUrl = getEnvOrThrow('MONGO_URI')
 
 async function main() {
   const client = new MongoClient(mongoUrl , {
@@ -29,6 +30,7 @@ async function main() {
     await Promise.all(
         sampleExpenses.map(sample => {
           const expense = createTransaction(
+              sample.userId,
               sample.type,
               sample.description,
               sample.amount,
