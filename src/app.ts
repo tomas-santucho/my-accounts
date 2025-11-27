@@ -3,8 +3,8 @@ import { Db, MongoClient, ServerApiVersion } from "mongodb";
 import { getEnvOrThrow } from "env-utils-js";
 import { createApp } from "./infrastructure/http/expressServer";
 
+
 let cachedDb: Db | null = null;
-let cachedClient: MongoClient | null = null;
 
 /**
  * Get or create MongoDB connection
@@ -16,7 +16,7 @@ async function getDatabase(): Promise<Db> {
   }
 
   const mongoUrl = getEnvOrThrow('MONGO_URI');
-  
+
   const client = new MongoClient(mongoUrl, {
     serverApi: {
       version: ServerApiVersion.v1,
@@ -26,7 +26,6 @@ async function getDatabase(): Promise<Db> {
   });
 
   await client.connect();
-  cachedClient = client;
   cachedDb = client.db();
 
   return cachedDb;
