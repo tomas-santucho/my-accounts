@@ -5,4 +5,7 @@ export interface TransactionRepository {
     findAll(): Promise<Transaction[]>;
     findById(id: string): Promise<Transaction | null>;
     findAllForCurrentMonth(): Promise<Transaction[]>;
+    update(transaction: Transaction): Promise<void>;
+    delete(id: string): Promise<void>;
+    deleteByInstallmentGroupId(installmentGroupId: string): Promise<void>;
 }

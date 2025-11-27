@@ -8,6 +8,9 @@ export const TransactionSchema = z.object({
     amount: z.number().positive("Amount must be positive"),
     category: z.string().min(1, "Category required"),
     currency: z.enum(["ars", "usd"]),
+    installments: z.number().int().positive().optional(),
+    installmentGroupId: z.string().uuid().optional(),
+    installmentNumber: z.number().int().positive().optional(),
     date: z.date(),
     createdAt: z.date(),
 });
@@ -20,7 +23,11 @@ export const createTransaction = (
     description: string,
     amount: number,
     category: string,
-    date: Date
+    date: Date,
+    currency: "ars" | "usd",
+    installments?: number,
+    installmentGroupId?: string,
+    installmentNumber?: number
 ): Transaction => {
     const transaction = {
         id: crypto.randomUUID(),
@@ -29,6 +36,10 @@ export const createTransaction = (
         description,
         amount,
         category,
+        currency,
+        installments,
+        installmentGroupId,
+        installmentNumber,
         date,
         createdAt: new Date(),
     };

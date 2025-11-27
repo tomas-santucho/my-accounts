@@ -1,61 +1,118 @@
 import express from "express";
-import {Db} from "mongodb";
-import {addExpense} from "../../../app/expense/addExpense";
-import {listExpenses} from "../../../app/expense/listExpenses";
-import {mongoTransactionRepo} from "../../db/mongoTransactionRepo";
-
+import { Db } from "mongodb";
+import { mongoTransactionRepo } from "../../db/mongoTransactionRepo";
+import { createTransaction, TransactionSchema } from "../../../domain/transaction/transaction";
+import { z } from "zod";
 
 export const transactionApi = (db: Db) => {
     const router = express.Router();
-    const repo = mongoTransactionRepo(db)
+    const repo = mongoTransactionRepo(db);
 
-    router.use(function (req, res, next) {
-        // middleware
-        next()
-    });
-
-    router.get("/expenses", async function (req, res) {
+    router.get("/transactions", async (req, res, next) => {
         try {
-            const expenses = await listExpenses(repo)();
-            res.status(200).json(expenses);
+            const transactions = await repo.findAll();
+            res.json(transactions);
         } catch (error) {
-            // basic error handling
-            if (error instanceof Error) {
-                res.status(400).json({error: error.message});
-            } else {
-                res.status(500).json({error: "An unexpected error occurred."});
-            }
-        }
-    });
-    
-    router.post("/expense", async function (req, res) {
-        try {
-            // TODO: Replace with authenticated user's ID. For now, using a placeholder.
-            const userId = "placeholder-user-id";
-            const {description, amount, category, date} = req.body;
-            const createdExpense = await addExpense(repo)(userId, {description, amount, category, date: new Date(date)});
-            res.status(201).json(createdExpense);
-        } catch (error) {
-            // basic error handling
-            if (error instanceof Error) {
-                res.status(400).json({error: error.message});
-            } else {
-                res.status(500).json({error: "An unexpected error occurred."});
-            }
+            next(error);
         }
     });
 
-
-    router.get("/expense/:id", function (req, res) {
-        /* ... */
+    router.get("/transactions/:id", async (req, res, next) => {
+        try {
+            const transaction = await repo.findById(req.params.id);
+            if (!transaction) {
+                res.status(404).json({ message: "Transaction not found" });
+                return;
+            }
+            res.json(transaction);
+        } catch (error) {
+            next(error);
+        }
     });
 
-    router.put("/expense/:id", function (req, res) {
-        /* ... */
+    router.post("/transactions", async (req, res, next) => {
+        try {
+            const body = req.body;
+            // Validate input using a partial schema or just manual extraction
+            // We use createTransaction helper which validates internally
+            const transaction = createTransaction(
+                body.userId,
+                body.type,
+                body.description,
+                body.amount,
+                body.category,
+                new Date(body.date),
+                body.currency,
+                body.installments,
+                body.installmentGroupId,
+                body.installmentNumber
+            );
+
+            await repo.save(transaction);
+            res.status(201).json(transaction);
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                res.status(400).json({ errors: error.issues });
+            } else {
+                next(error);
+            }
+        }
     });
 
-    router.delete("/expense/:id", function (req, res) {
-        /* ... */
+    router.put("/transactions/:id", async (req, res, next) => {
+        try {
+            const id = req.params.id;
+            const existing = await repo.findById(id);
+            if (!existing) {
+                res.status(404).json({ message: "Transaction not found" });
+                return;
+            }
+
+            const body = req.body;
+            // Merge existing with updates
+            const updatedTransaction = TransactionSchema.parse({
+                ...existing,
+                ...body,
+                id: id, // Ensure ID doesn't change
+                date: new Date(body.date || existing.date),
+                createdAt: new Date(existing.createdAt) // Keep original createdAt
+            });
+
+            await repo.update(updatedTransaction);
+            res.json(updatedTransaction);
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                res.status(400).json({ errors: error.issues });
+            } else {
+                next(error);
+            }
+        }
     });
-    return router
-}
+
+    router.delete("/transactions/:id", async (req, res, next) => {
+        try {
+            const id = req.params.id;
+            const existing = await repo.findById(id);
+            if (!existing) {
+                res.status(404).json({ message: "Transaction not found" });
+                return;
+            }
+            await repo.delete(id);
+            res.status(204).send();
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    router.delete("/transactions/installment-group/:installmentGroupId", async (req, res, next) => {
+        try {
+            const installmentGroupId = req.params.installmentGroupId;
+            await repo.deleteByInstallmentGroupId(installmentGroupId);
+            res.status(204).send();
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    return router;
+};

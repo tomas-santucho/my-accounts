@@ -1,6 +1,6 @@
-import {TransactionRepository} from "../../domain/transaction/transactionRepository";
-import {Db} from "mongodb";
-import {Transaction, TransactionSchema} from "../../domain/transaction/transaction";
+import { TransactionRepository } from "../../domain/transaction/transactionRepository";
+import { Db } from "mongodb";
+import { Transaction, TransactionSchema } from "../../domain/transaction/transaction";
 
 export const mongoTransactionRepo = (db: Db): TransactionRepository & {
     findAllForCurrentMonth: () => Promise<Transaction[]>;
@@ -45,5 +45,20 @@ export const mongoTransactionRepo = (db: Db): TransactionRepository & {
         return docs.map((d) =>
             TransactionSchema.parse({ ...d, createdAt: new Date(d["createdAt"]), date: new Date(d["date"]) })
         );
+    },
+
+    async update(transaction: Transaction) {
+        await db.collection("transactions").updateOne(
+            { id: transaction.id },
+            { $set: transaction }
+        );
+    },
+
+    async delete(id: string) {
+        await db.collection("transactions").deleteOne({ id });
+    },
+
+    async deleteByInstallmentGroupId(installmentGroupId: string) {
+        await db.collection("transactions").deleteMany({ installmentGroupId });
     },
 });

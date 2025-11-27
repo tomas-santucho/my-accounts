@@ -36,7 +36,8 @@ async function main() {
           sample.description,
           sample.amount,
           sample.category,
-          sample.date
+          sample.date,
+          "ars" // Default currency for sample data
         );
         return expenseRepo.save(expense);
       })

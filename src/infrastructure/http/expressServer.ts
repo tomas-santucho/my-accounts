@@ -6,12 +6,13 @@ import { responseTimeLogger } from "./middlewares/responseTimeLogger";
 import { transactionApi } from "./routes/transactionRoutes";
 import path from "node:path";
 import { Db } from "mongodb";
+import {version} from "../../version";
 
 export const createApp = (db: Db): Application => {
     const app = express();
 
     app.get('/', (_, res) => {
-        res.send('Hello TypeScript + Express!');
+        res.send('My Accounts '+version);
     });
 
     app.use(pinoHttp({ logger }));
@@ -57,9 +58,3 @@ export const createApp = (db: Db): Application => {
 
     return app;
 }
-
-export const startServer = (port: Number, db: Db) => {
-    const app = createApp(db);
-    const server = app.listen(port, () => logger.info(`🚀 Server running on port ${port}`));
-    return { app, server };
-};
