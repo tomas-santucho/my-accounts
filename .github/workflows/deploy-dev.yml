@@ -25,9 +25,6 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Build TypeScript
-        run: bun run build
-
       - name: Create deployment package
         run: |
           zip -r my-accounts.zip . \
@@ -46,10 +43,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Upload to S3
-        run: |
-          aws s3 cp my-accounts.zip s3://my-accounts-dev-deploy/deploy/my-accounts.zip
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -60,13 +53,17 @@ jobs:
           cd infra/dev
           terraform init -input=false
 
-      - name: Terraform Plan
+      - name: Terraform Apply (Bucket Only)
         run: |
           cd infra/dev
-          terraform plan -input=false \
+          terraform apply -auto-approve -input=false -target=aws_s3_bucket.deploy \
             -var="mongo_uri=${{ secrets.MONGO_URI_DEV }}"
 
-      - name: Terraform Apply
+      - name: Upload to S3
+        run: |
+          aws s3 cp my-accounts.zip s3://my-accounts-dev-deploy/deploy/my-accounts.zip
+
+      - name: Terraform Apply (Full)
         run: |
           cd infra/dev
           terraform apply -auto-approve -input=false \
