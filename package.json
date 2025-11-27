@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "start": "bun dist/index.js",
     "test": "vitest",
     "lint": "eslint ."
