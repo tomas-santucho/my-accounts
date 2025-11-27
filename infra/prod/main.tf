@@ -4,7 +4,7 @@ provider "aws" {
 
 locals {
   project_name = "my-accounts"
-  environment  = "dev"
+  environment  = "prod"
 }
 
 # S3 bucket for deployment artifacts
