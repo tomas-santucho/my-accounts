@@ -5,7 +5,7 @@ resource "aws_cognito_user_pool" "main" {
   auto_verified_attributes = ["email"]
 
   password_policy {
-    minimum_length    = 4
+    minimum_length    = 6
     require_lowercase = false
     require_numbers   = false
     require_symbols   = false
