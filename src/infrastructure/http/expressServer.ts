@@ -8,6 +8,7 @@ import { categoryApi } from "./routes/categoryRoutes";
 import path from "node:path";
 import { Db } from "mongodb";
 import { version } from "../../version";
+import { requireAuth } from "../auth/cognitoMiddleware";
 
 export const createApp = (db: Db): Application => {
     const app = express();
@@ -21,8 +22,8 @@ export const createApp = (db: Db): Application => {
     app.use(globalRateLimiter);
     app.use(responseTimeLogger);
 
-    app.use("/api", transactionApi(db));
-    app.use("/api", categoryApi(db));
+    app.use("/api", requireAuth, transactionApi(db));
+    app.use("/api", requireAuth, categoryApi(db));
 
     app.get("/users/:userid", function (req) {
         parseInt(req.params.userid, 10);
