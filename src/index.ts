@@ -23,26 +23,27 @@ async function main() {
   await client.connect();
   const db = client.db();
 
-  const expenseRepo = mongoTransactionRepo(db);
-  const expenses = await expenseRepo.findAll();
-  if (expenses.length === 0) {
-    console.log("No expenses found, loading sample data...");
-
-    await Promise.all(
-      sampleExpenses.map(sample => {
-        const expense = createTransaction(
-          sample.userId,
-          sample.type,
-          sample.description,
-          sample.amount,
-          sample.category,
-          sample.date,
-          "ars" // Default currency for sample data
-        );
-        return expenseRepo.save(expense);
-      })
-    );
-  }
+  // TEMPORARY: Comment out sample data loading due to Zod validation errors
+  // const expenseRepo = mongoTransactionRepo(db);
+  // const expenses = await expenseRepo.findAll();
+  // if (expenses.length === 0) {
+  //   console.log("No expenses found, loading sample data...");
+  //
+  //   await Promise.all(
+  //     sampleExpenses.map(sample => {
+  //       const expense = createTransaction(
+  //         sample.userId,
+  //         sample.type,
+  //         sample.description,
+  //         sample.amount,
+  //         sample.category,
+  //         sample.date,
+  //         "ars" // Default currency for sample data
+  //       );
+  //       return expenseRepo.save(expense);
+  //     })
+  //   );
+  // }
 
   // Create and start the Express app
   const app = createAppSync(db);

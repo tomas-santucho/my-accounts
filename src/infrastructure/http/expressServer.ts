@@ -4,15 +4,16 @@ import { logger } from "./logger/logger";
 import { globalRateLimiter } from "./rate-limiter/rateLimiter";
 import { responseTimeLogger } from "./middlewares/responseTimeLogger";
 import { transactionApi } from "./routes/transactionRoutes";
+import { categoryApi } from "./routes/categoryRoutes";
 import path from "node:path";
 import { Db } from "mongodb";
-import {version} from "../../version";
+import { version } from "../../version";
 
 export const createApp = (db: Db): Application => {
     const app = express();
 
     app.get('/', (_, res) => {
-        res.send('My Accounts '+version);
+        res.send('My Accounts ' + version);
     });
 
     app.use(pinoHttp({ logger }));
@@ -21,6 +22,7 @@ export const createApp = (db: Db): Application => {
     app.use(responseTimeLogger);
 
     app.use("/api", transactionApi(db));
+    app.use("/api", categoryApi(db));
 
     app.get("/users/:userid", function (req) {
         parseInt(req.params.userid, 10);

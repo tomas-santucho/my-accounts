@@ -7,6 +7,8 @@ locals {
   environment  = "prod"
 }
 
+data "aws_region" "current" {}
+
 # S3 bucket for deployment artifacts
 resource "aws_s3_bucket" "deploy" {
   bucket        = var.s3_bucket_name

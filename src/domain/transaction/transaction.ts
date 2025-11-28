@@ -8,9 +8,9 @@ export const TransactionSchema = z.object({
     amount: z.number().positive("Amount must be positive"),
     category: z.string().min(1, "Category required"),
     currency: z.enum(["ars", "usd"]),
-    installments: z.number().int().positive().optional(),
-    installmentGroupId: z.string().uuid().optional(),
-    installmentNumber: z.number().int().positive().optional(),
+    installments: z.number().int().positive().nullish(),
+    installmentGroupId: z.string().uuid().nullish(),
+    installmentNumber: z.number().int().positive().nullish(),
     date: z.date(),
     createdAt: z.date(),
 });

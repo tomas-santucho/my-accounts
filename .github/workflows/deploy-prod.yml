@@ -60,7 +60,9 @@ jobs:
         run: |
           cd infra/prod
           terraform apply -auto-approve -input=false -target=aws_s3_bucket.deploy \
-            -var="mongo_uri=${{ secrets.MONGO_URI_PROD }}"
+            -var="mongo_uri=${{ secrets.MONGO_URI_PROD }}" \
+            -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID_PROD }}" \
+            -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET_PROD }}"
 
       - name: Upload to S3
         run: |
@@ -70,7 +72,9 @@ jobs:
         run: |
           cd infra/prod
           terraform apply -auto-approve -input=false \
-            -var="mongo_uri=${{ secrets.MONGO_URI_PROD }}"
+            -var="mongo_uri=${{ secrets.MONGO_URI_PROD }}" \
+            -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID_PROD }}" \
+            -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET_PROD }}"
 
       - name: Update Lambda function
         run: |

@@ -7,6 +7,8 @@ locals {
   environment  = "dev"
 }
 
+data "aws_region" "current" {}
+
 # S3 bucket for deployment artifacts
 resource "aws_s3_bucket" "deploy" {
   bucket        = var.s3_bucket_name
@@ -141,15 +143,4 @@ resource "aws_apigatewayv2_stage" "default" {
     Environment = local.environment
     ManagedBy   = "Terraform"
   }
-}
-
-# Outputs
-output "api_endpoint" {
-  description = "API Gateway endpoint URL"
-  value       = aws_apigatewayv2_api.http.api_endpoint
-}
-
-output "lambda_function_name" {
-  description = "Lambda function name"
-  value       = aws_lambda_function.express.function_name
 }

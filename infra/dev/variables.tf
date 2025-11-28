@@ -9,3 +9,27 @@ variable "mongo_uri" {
   description = "MongoDB connection URI"
   sensitive   = true
 }
+
+variable "google_client_id" {
+  type        = string
+  description = "Google OAuth Client ID"
+  sensitive   = true
+}
+
+variable "google_client_secret" {
+  type        = string
+  description = "Google OAuth Client Secret"
+  sensitive   = true
+}
+
+variable "cognito_domain_prefix" {
+  type        = string
+  description = "Prefix for the Cognito Hosted UI domain"
+  default     = "my-accounts-auth"
+}
+
+variable "expo_redirect_uris" {
+  type        = list(string)
+  description = "List of allowed callback/logout URLs for the Expo app"
+  default     = ["exp://localhost:19000/--/"]
+}
