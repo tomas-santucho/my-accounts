@@ -105,6 +105,13 @@ resource "aws_apigatewayv2_api" "http" {
   name          = "${local.project_name}-${local.environment}-api"
   protocol_type = "HTTP"
 
+  cors_configuration {
+    allow_headers = ["Content-Type", "Authorization", "X-Amz-Date", "X-Api-Key", "X-Amz-Security-Token"]
+    allow_methods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allow_origins = ["*"]
+    max_age       = 300
+  }
+
   tags = {
     Name        = "${local.project_name}-${local.environment}-api"
     Environment = local.environment
@@ -137,6 +144,11 @@ resource "aws_apigatewayv2_stage" "default" {
   api_id      = aws_apigatewayv2_api.http.id
   name        = "$default"
   auto_deploy = true
+
+  default_route_settings {
+    throttling_burst_limit = 50
+    throttling_rate_limit  = 100
+  }
 
   tags = {
     Name        = "${local.project_name}-${local.environment}-stage"
