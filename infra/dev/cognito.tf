@@ -30,6 +30,18 @@ resource "aws_cognito_user_pool" "main" {
     }
   }
 
+  schema {
+    attribute_data_type = "String"
+    name                = "name"
+    required            = false
+    mutable             = true
+
+    string_attribute_constraints {
+      min_length = 0
+      max_length = 2048
+    }
+  }
+
   tags = {
     Name        = "${local.project_name}-${local.environment}-user-pool"
     Environment = local.environment
