@@ -3,7 +3,7 @@
   "author": "Tomas Santucho",
   "module": "src/index.ts",
   "version": "0.4.0",
-  "private": true,
+  "license": "CC-BY-NC-SA-4.0",
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "build": "tsc -p tsconfig.build.json",

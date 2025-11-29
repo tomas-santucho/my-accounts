@@ -12,112 +12,164 @@ The app currently exposes a simple REST API for managing **expenses** (and later
 
 ---
 
-## 🧩 Stack
+## 🏗️ Architecture & Infrastructure
 
-- **Runtime:** [Bun](https://bun.sh)
-- **Backend:** Express.js (TypeScript)
-- **Database:** MongoDB
-- **Infra:** Terraform (AWS)
-- **Architecture:** Hexagonal / Functional DDD
+This project is designed to run as a **serverless application** on AWS, provisioned entirely with **Terraform**. It does **not** use Docker for deployment.
+
+The main components are:
+
+-   **AWS Lambda**: The Express.js application is wrapped using the `serverless-http` library to run inside a Node.js Lambda function. This handles all API logic.
+-   **API Gateway (HTTP API)**: Acts as the public-facing entry point for the API, proxying all requests to the Lambda function.
+-   **AWS Cognito**: Manages user authentication and authorization. It's configured to allow sign-ins via email/password and Google.
+-   **S3 Bucket**: Used to store the zipped deployment package for the Lambda function.
+-   **IAM Roles**: Defines the necessary permissions for the Lambda function to execute and write logs.
+
+This serverless approach avoids the need to manage servers, relying on AWS to handle scaling and availability.
 
 ---
 
-## 🛠️ Setup
+## 🧩 Stack
+
+-   **Runtime**: [Bun](https://bun.sh)
+-   **Backend**: Express.js (TypeScript)
+-   **Database**: MongoDB
+-   **Infrastructure**: Terraform
+-   **Cloud Provider**: AWS (Lambda, API Gateway, Cognito)
+-   **Architecture**: Hexagonal / Functional DDD
+
+---
+
+## 🛠️ Local Setup
 
 ### 1️⃣ Clone the repo
+
 ```bash
 git clone https://github.com/yourusername/myaccountsts.git
 cd myaccountsts
 ```
 
 ### 2️⃣ Install dependencies
+
 ```bash
 bun install
 ```
 
 ### 3️⃣ Set up environment variables
+
 Create a `.env` file in the root:
+
 ```bash
 MONGO_URI=mongodb://localhost:27017/my-accounts
 PORT=3000
 ```
 
 ### 4️⃣ Run MongoDB
+
 If you have Docker:
+
 ```bash
 docker run -d --name mongo -p 27017:27017 mongo
 ```
 
 or using `docker compose`:
+
 ```bash
 docker compose up -d
 ```
 
 ---
 
-## 🧰 Running the App
+## 🧰 Running the App Locally
 
-### Development
+### Development Mode (with hot-reload)
+
 ```bash
-bun run src/index.ts
+bun run dev
 ```
 
-or if your entry file is `src/main.ts`:
+### Build for Production
+
 ```bash
-bun run src/main.ts
+bun run build
 ```
 
-### Production (after building)
+### Run Production Build
+
 ```bash
-bun build src/index.ts --outdir dist
-bun run dist/index.js
+bun run start
 ```
 
 ---
 
-## 🧱 Infrastructure (Terraform)
+## ✅ Testing and Linting
 
-To start experimenting with **Terraform** + AWS:
+### Run Tests
 
 ```bash
-cd terraform
-terraform init
-terraform plan
-terraform apply
+bun test
 ```
 
-⚠️ Remember to destroy your test infra when done:
+### Run Linter
+
+```bash
+bun run lint
+```
+
+---
+
+## ☁️ Deploying to AWS with Terraform
+
+The infrastructure is defined in the `/infra` directory.
+
+To deploy the application to your AWS account:
+
+1.  **Navigate to the Terraform directory**:
+    ```bash
+    cd infra/dev
+    ```
+
+2.  **Initialize Terraform**:
+    ```bash
+    terraform init
+    ```
+
+3.  **Review the plan**:
+    ```bash
+    terraform plan
+    ```
+
+4.  **Apply the changes**:
+    ```bash
+    terraform apply
+    ```
+
+⚠️ **Important**: When you're finished, remember to destroy your test infrastructure to avoid incurring costs.
+
 ```bash
 terraform destroy
 ```
-
-Recommended AWS region for Argentina 🇦🇷 → `sa-east-1` (São Paulo).
 
 ---
 
 ## 🧠 Learning Goals
 
-- Build clean, testable Express APIs with TypeScript.
-- Model data and domain logic with MongoDB.
-- Learn infrastructure as code (Terraform).
-- Understand deployment pipelines and containerization.
-
----
-
-## 🐇 Quick Commands
-
-| Task | Command |
-|------|----------|
-| Install deps | `bun install` |
-| Dev run | `bun run src/index.ts` |
-| Build | `bun build src/index.ts --outdir dist` |
-| Run built app | `bun run dist/index.js` |
-| Run MongoDB | `docker run -d -p 27017:27017 mongo` |
-| Apply Terraform infra | `terraform apply` |
-| Destroy Terraform infra | `terraform destroy` |
+-   Build clean, testable Express APIs with TypeScript.
+-   Model data and domain logic with MongoDB.
+-   Learn infrastructure as code (Terraform) for serverless applications.
+-   Understand AWS Lambda, API Gateway, and Cognito.
+-   Set up CI/CD pipelines for automated deployments.
 
 ---
 
 ## 📜 License
 
-MIT © 2025 — built while learning and experimenting.
+This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+You are free to:
+- **Share** — copy and redistribute the material in any medium or format
+- **Adapt** — remix, transform, and build upon the material
+
+Under the following terms:
+- **Attribution** — You must give appropriate credit.
+- **NonCommercial** — You may not use the material for commercial purposes.
+- **ShareAlike** — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
