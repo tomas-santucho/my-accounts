@@ -69,12 +69,18 @@ resource "aws_cognito_user_pool_client" "expo" {
 
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows                  = ["code"]
-  allowed_oauth_scopes                 = ["email", "openid", "profile"]
+  allowed_oauth_scopes                 = ["email", "openid", "profile", "aws.cognito.signin.user.admin"]
+
+  explicit_auth_flows = [
+    "ALLOW_USER_PASSWORD_AUTH",
+    "ALLOW_REFRESH_TOKEN_AUTH",
+    "ALLOW_USER_SRP_AUTH"
+  ]
 
   supported_identity_providers = ["COGNITO", "Google"]
 
   callback_urls = var.expo_redirect_uris
-  logout_urls   = var.expo_redirect_uris
+  logout_urls   = var.expo_logout_uris
 
   # Prevent user existence errors to avoid username enumeration
   prevent_user_existence_errors = "ENABLED"

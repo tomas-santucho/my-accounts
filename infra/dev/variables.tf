@@ -31,5 +31,17 @@ variable "cognito_domain_prefix" {
 variable "expo_redirect_uris" {
   type        = list(string)
   description = "List of allowed callback/logout URLs for the Expo app"
-  default     = ["exp://localhost:19000/--/"]
+  default = [
+    "exp://127.0.0.1:19000/--/oauthredirect",
+    "myaccounts://oauthredirect"
+  ]
+}
+
+variable "expo_logout_uris" {
+  type        = list(string)
+  description = "List of allowed logout URLs for the Expo app"
+  default = [
+    "exp://127.0.0.1:19000/--/signout",
+    "myaccounts://signout"
+  ]
 }

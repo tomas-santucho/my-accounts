@@ -43,6 +43,10 @@ export const requireAuth = async (req: AuthenticatedRequest, res: Response, next
 
     const token = authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : authHeader;
 
+    if (!token) {
+        return res.status(401).json({ message: "Malformed token" });
+    }
+
     try {
         const payload = await verifier.verify(token);
         req.user = payload;
