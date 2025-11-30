@@ -31,7 +31,7 @@ variable "expo_redirect_uris" {
   type        = list(string)
   description = "List of allowed callback/logout URLs for the Expo app"
   default = [
-    "myaccounts://oauthredirect"
+    "my-accounts://"
   ]
 }
 
@@ -39,6 +39,6 @@ variable "expo_logout_uris" {
   type        = list(string)
   description = "List of allowed logout URLs for the Expo app"
   default = [
-    "myaccounts://signout"
+    "my-accounts://"
   ]
 }
