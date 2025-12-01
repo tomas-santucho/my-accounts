@@ -16,6 +16,7 @@
     "@types/bun": "latest",
     "@types/cookie-parser": "^1.4.10",
     "@types/express-rate-limit": "^6.0.2",
+    "@types/json2csv": "^5.0.7",
     "@types/pino": "^7.0.5",
     "@types/response-time": "^2.3.9",
     "@types/supertest": "^6.0.3",

@@ -3,6 +3,7 @@ import { Db } from "mongodb";
 import { mongoTransactionRepo } from "../../db/mongoTransactionRepo";
 import { createTransaction, TransactionSchema } from "../../../domain/transaction/transaction";
 import { z } from "zod";
+import { Parser } from "json2csv";
 
 export const transactionApi = (db: Db) => {
     const router = express.Router();
@@ -12,6 +13,21 @@ export const transactionApi = (db: Db) => {
         try {
             const transactions = await repo.findAll();
             res.json(transactions);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    router.get("/transactions/export", async (req, res, next) => {
+        try {
+            const transactions = await repo.findAll();
+            const fields = ["id", "userId", "type", "description", "amount", "category", "date", "currency", "installments", "installmentGroupId", "installmentNumber", "createdAt"];
+            const json2csvParser = new Parser({ fields });
+            const csv = json2csvParser.parse(transactions);
+
+            res.header("Content-Type", "text/csv");
+            res.header("Content-Disposition", "attachment; filename=transactions.csv");
+            res.send(csv);
         } catch (error) {
             next(error);
         }

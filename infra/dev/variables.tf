@@ -33,8 +33,8 @@ variable "expo_redirect_uris" {
   description = "List of allowed callback/logout URLs for the Expo app"
   default = [
     "exp://127.0.0.1:19000/--/oauthredirect",
-    "my-accounts://",
-    "http://localhost:8081"
+    "myaccounts://oauthredirect",
+    "http://localhost:8081/"
   ]
 }
 
@@ -43,7 +43,7 @@ variable "expo_logout_uris" {
   description = "List of allowed logout URLs for the Expo app"
   default = [
     "exp://127.0.0.1:19000/--/signout",
-    "my-accounts://",
-    "http://localhost:8081"
+    "myaccounts://signout",
+    "http://localhost:8081/"
   ]
 }
