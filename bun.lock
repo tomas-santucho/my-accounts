@@ -32,6 +32,7 @@
         "@types/bun": "latest",
         "@types/cookie-parser": "^1.4.10",
         "@types/express-rate-limit": "^6.0.2",
+        "@types/json2csv": "^5.0.7",
         "@types/pino": "^7.0.5",
         "@types/response-time": "^2.3.9",
         "@types/supertest": "^6.0.3",
@@ -226,6 +227,8 @@
     "@types/http-errors": ["@types/http-errors@2.0.5", "", {}, ""],
 
     "@types/json-schema": ["@types/json-schema@7.0.15", "", {}, "sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA=="],
+
+    "@types/json2csv": ["@types/json2csv@5.0.7", "", { "dependencies": { "@types/node": "*" } }, "sha512-Ma25zw9G9GEBnX8b12R4EYvnFT6dBh8L3jwsN5EUFXa+fl2dqmbLDbNWN0XuQU3rSXdsbBeCYjI9uHU2PUBxhA=="],
 
     "@types/methods": ["@types/methods@1.1.4", "", {}, "sha512-ymXWVrDiCxTBE3+RIrrP533E70eA+9qu7zdWoHuOmGujkYtzf4HQF96b8nwHLqhuf4ykX61IGRIB38CC6/sImQ=="],
 
