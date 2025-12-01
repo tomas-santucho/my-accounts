@@ -5,6 +5,7 @@ import { globalRateLimiter } from "./rate-limiter/rateLimiter";
 import { responseTimeLogger } from "./middlewares/responseTimeLogger";
 import { transactionApi } from "./routes/transactionRoutes";
 import { categoryApi } from "./routes/categoryRoutes";
+import { syncApi } from "./routes/syncRoutes";
 import path from "node:path";
 import { Db } from "mongodb";
 import { version } from "../../version";
@@ -24,6 +25,7 @@ export const createApp = (db: Db): Application => {
 
     app.use("/api", requireAuth, transactionApi(db));
     app.use("/api", requireAuth, categoryApi(db));
+    app.use("/api", requireAuth, syncApi(db));
 
     app.get("/users/:userid", function (req) {
         parseInt(req.params.userid, 10);
