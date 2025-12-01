@@ -9,6 +9,7 @@ export const sampleExpenses: Omit<Transaction, "id" | "createdAt">[] = [
         category: "Food",
         currency: "ars",
         date: new Date("2025-01-15"),
+        updatedAt: new Date(),
     },
     {
         userId: "1234",
@@ -18,6 +19,7 @@ export const sampleExpenses: Omit<Transaction, "id" | "createdAt">[] = [
         category: "Transportation",
         currency: "ars",
         date: new Date("2025-01-16"),
+        updatedAt: new Date(),
     },
     {
         userId: "1234",
@@ -27,5 +29,6 @@ export const sampleExpenses: Omit<Transaction, "id" | "createdAt">[] = [
         category: "Entertainment",
         currency: "ars",
         date: new Date("2025-01-17"),
+        updatedAt: new Date(),
     },
 ];
