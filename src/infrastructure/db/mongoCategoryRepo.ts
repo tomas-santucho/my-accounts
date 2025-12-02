@@ -4,6 +4,20 @@ import { CategoryRepository } from "../../domain/category/categoryRepository";
 
 const COLLECTION_NAME = "categories";
 
+const toDate = (value: any): Date => {
+    if (value instanceof Date) {
+        return value;
+    }
+    if (typeof value === 'string' || typeof value === 'number') {
+        const date = new Date(value);
+        // Check if the date is valid
+        if (!isNaN(date.getTime())) {
+            return date;
+        }
+    }
+    return new Date();
+};
+
 export const mongoCategoryRepo = (db: Db): CategoryRepository & {
     findChanges: (since: Date) => Promise<Category[]>;
     batchUpsert: (categories: Category[]) => Promise<void>;
@@ -15,8 +29,8 @@ export const mongoCategoryRepo = (db: Db): CategoryRepository & {
             const docs = await collection.find({ deletedAt: { $eq: null } }).toArray();
             return docs.map(d => CategorySchema.parse({
                 ...d,
-                updatedAt: new Date(d["updatedAt"]),
-                deletedAt: d["deletedAt"] ? new Date(d["deletedAt"]) : null
+                updatedAt: toDate(d["updatedAt"]),
+                deletedAt: d["deletedAt"] ? toDate(d["deletedAt"]) : null
             }));
         },
 
@@ -24,8 +38,8 @@ export const mongoCategoryRepo = (db: Db): CategoryRepository & {
             const doc = await collection.findOne({ id, deletedAt: { $eq: null } });
             return doc ? CategorySchema.parse({
                 ...doc,
-                updatedAt: new Date(doc["updatedAt"]),
-                deletedAt: doc["deletedAt"] ? new Date(doc["deletedAt"]) : null
+                updatedAt: toDate(doc["updatedAt"]),
+                deletedAt: doc["deletedAt"] ? toDate(doc["deletedAt"]) : null
             }) : null;
         },
 
@@ -52,8 +66,8 @@ export const mongoCategoryRepo = (db: Db): CategoryRepository & {
             }).toArray();
             return docs.map(d => CategorySchema.parse({
                 ...d,
-                updatedAt: new Date(d["updatedAt"]),
-                deletedAt: d["deletedAt"] ? new Date(d["deletedAt"]) : null
+                updatedAt: toDate(d["updatedAt"]),
+                deletedAt: d["deletedAt"] ? toDate(d["deletedAt"]) : null
             }));
         },
 
