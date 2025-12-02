@@ -2,7 +2,7 @@
   "name": "myaccountsts",
   "author": "Tomas Santucho",
   "module": "src/index.ts",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "license": "CC-BY-NC-SA-4.0",
   "scripts": {
     "dev": "bun --watch src/index.ts",
@@ -41,6 +41,7 @@
     "eslint": "^9.39.1",
     "express": "^4.18.0",
     "express-rate-limit": "^8.2.1",
+    "json2csv": "^6.0.0-alpha.2",
     "mongodb": "^7.0.0",
     "pino": "^10.1.0",
     "pino-http": "^11.0.0",
