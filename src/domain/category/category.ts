@@ -5,8 +5,8 @@ export const CategorySchema = z.object({
     name: z.string().min(1, "Name required"),
     icon: z.string().min(1, "Icon required"),
     type: z.enum(["income", "expense"]),
-    color: z.string().optional(),
-    isDefault: z.boolean().optional(),
+    color: z.string().nullish(),
+    isDefault: z.boolean().nullish(),
     updatedAt: z.date(),
     deletedAt: z.date().nullish(),
 });
