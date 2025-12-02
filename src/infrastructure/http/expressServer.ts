@@ -1,4 +1,5 @@
 import express, { Application } from "express";
+import cors from "cors";
 import pinoHttp from "pino-http";
 import { logger } from "./logger/logger";
 import { globalRateLimiter } from "./rate-limiter/rateLimiter";
@@ -15,6 +16,14 @@ export const createApp = (db: Db): Application => {
     const app = express();
 
     app.set('trust proxy', true);
+
+    // CORS configuration - must be before other middleware
+    app.use(cors({
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Amz-Date', 'X-Api-Key', 'X-Amz-Security-Token'],
+        maxAge: 300
+    }));
 
     app.get('/', (_, res) => {
         res.send('My Accounts ' + version);
