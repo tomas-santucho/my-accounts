@@ -14,6 +14,8 @@ import { requireAuth } from "../auth/cognitoMiddleware";
 export const createApp = (db: Db): Application => {
     const app = express();
 
+    app.set('trust proxy', true);
+
     app.get('/', (_, res) => {
         res.send('My Accounts ' + version);
     });
