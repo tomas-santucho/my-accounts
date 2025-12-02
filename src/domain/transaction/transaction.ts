@@ -11,10 +11,10 @@ export const TransactionSchema = z.object({
     installments: z.number().int().positive().nullish(),
     installmentGroupId: z.string().uuid().nullish(),
     installmentNumber: z.number().int().positive().nullish(),
-    date: z.date(),
-    createdAt: z.date(),
-    updatedAt: z.date(),
-    deletedAt: z.date().nullish(),
+    date: z.coerce.date(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+    deletedAt: z.coerce.date().nullish(),
 });
 
 export type Transaction = z.infer<typeof TransactionSchema>;

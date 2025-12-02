@@ -7,8 +7,8 @@ export const CategorySchema = z.object({
     type: z.enum(["income", "expense"]),
     color: z.string().nullish(),
     isDefault: z.boolean().nullish(),
-    updatedAt: z.date(),
-    deletedAt: z.date().nullish(),
+    updatedAt: z.coerce.date(),
+    deletedAt: z.coerce.date().nullish(),
 });
 
 export type Category = z.infer<typeof CategorySchema>;
