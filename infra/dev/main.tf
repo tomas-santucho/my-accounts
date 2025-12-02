@@ -88,8 +88,10 @@ resource "aws_lambda_function" "express" {
 
   environment {
     variables = {
-      NODE_ENV  = local.environment
-      MONGO_URI = var.mongo_uri
+      NODE_ENV             = local.environment
+      MONGO_URI            = var.mongo_uri
+      COGNITO_USER_POOL_ID = aws_cognito_user_pool.main.id
+      COGNITO_CLIENT_ID    = aws_cognito_user_pool_client.expo.id
     }
   }
 
