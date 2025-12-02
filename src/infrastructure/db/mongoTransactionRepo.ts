@@ -2,6 +2,20 @@ import { TransactionRepository } from "../../domain/transaction/transactionRepos
 import { Db } from "mongodb";
 import { Transaction, TransactionSchema } from "../../domain/transaction/transaction";
 
+const toDate = (value: any): Date => {
+    if (value instanceof Date) {
+        return value;
+    }
+    if (typeof value === 'string' || typeof value === 'number') {
+        const date = new Date(value);
+        if (!isNaN(date.getTime())) {
+            return date;
+        }
+    }
+    return new Date();
+};
+
+
 export const mongoTransactionRepo = (db: Db): TransactionRepository & {
     findAllForCurrentMonth: () => Promise<Transaction[]>;
     findChanges: (since: Date, userId: string) => Promise<Transaction[]>;
@@ -16,10 +30,10 @@ export const mongoTransactionRepo = (db: Db): TransactionRepository & {
         return docs.map((d) =>
             TransactionSchema.parse({
                 ...d,
-                createdAt: new Date(d["createdAt"]),
-                date: new Date(d["date"]),
-                updatedAt: new Date(d["updatedAt"]),
-                deletedAt: d["deletedAt"] ? new Date(d["deletedAt"]) : null
+                createdAt: toDate(d["createdAt"]),
+                date: toDate(d["date"]),
+                updatedAt: toDate(d["updatedAt"]),
+                deletedAt: d["deletedAt"] ? toDate(d["deletedAt"]) : null
             })
         );
     },
@@ -29,10 +43,10 @@ export const mongoTransactionRepo = (db: Db): TransactionRepository & {
         return doc
             ? TransactionSchema.parse({
                 ...doc,
-                createdAt: new Date(doc["createdAt"]),
-                date: new Date(doc["date"]),
-                updatedAt: new Date(doc["updatedAt"]),
-                deletedAt: doc["deletedAt"] ? new Date(doc["deletedAt"]) : null
+                createdAt: toDate(doc["createdAt"]),
+                date: toDate(doc["date"]),
+                updatedAt: toDate(doc["updatedAt"]),
+                deletedAt: doc["deletedAt"] ? toDate(doc["deletedAt"]) : null
             })
             : null;
     },
@@ -56,10 +70,10 @@ export const mongoTransactionRepo = (db: Db): TransactionRepository & {
         return docs.map((d) =>
             TransactionSchema.parse({
                 ...d,
-                createdAt: new Date(d["createdAt"]),
-                date: new Date(d["date"]),
-                updatedAt: new Date(d["updatedAt"]),
-                deletedAt: d["deletedAt"] ? new Date(d["deletedAt"]) : null
+                createdAt: toDate(d["createdAt"]),
+                date: toDate(d["date"]),
+                updatedAt: toDate(d["updatedAt"]),
+                deletedAt: d["deletedAt"] ? toDate(d["deletedAt"]) : null
             })
         );
     },
@@ -94,10 +108,10 @@ export const mongoTransactionRepo = (db: Db): TransactionRepository & {
         return docs.map((d) =>
             TransactionSchema.parse({
                 ...d,
-                createdAt: new Date(d["createdAt"]),
-                date: new Date(d["date"]),
-                updatedAt: new Date(d["updatedAt"]),
-                deletedAt: d["deletedAt"] ? new Date(d["deletedAt"]) : null
+                createdAt: toDate(d["createdAt"]),
+                date: toDate(d["date"]),
+                updatedAt: toDate(d["updatedAt"]),
+                deletedAt: d["deletedAt"] ? toDate(d["deletedAt"]) : null
             })
         );
     },

@@ -7,7 +7,7 @@ export const TransactionSchema = z.object({
     description: z.string().min(1, "Description required"),
     amount: z.number().positive("Amount must be positive"),
     category: z.string().min(1, "Category required"),
-    currency: z.enum(["ars", "usd"]),
+    currency: z.enum(["ars", "usd"]).nullish(),
     installments: z.number().int().positive().nullish(),
     installmentGroupId: z.string().uuid().nullish(),
     installmentNumber: z.number().int().positive().nullish(),
