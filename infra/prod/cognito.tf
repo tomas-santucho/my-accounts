@@ -83,4 +83,6 @@ resource "aws_cognito_user_pool_client" "expo" {
   logout_urls   = var.expo_logout_uris
 
   prevent_user_existence_errors = "ENABLED"
+
+  depends_on = [aws_cognito_identity_provider.google]
 }
