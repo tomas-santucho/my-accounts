@@ -1,0 +1,91 @@
+name: Manual Deploy to AWS Lambda (Prod)
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to deploy to PROD"
+        required: true
+        type: string
+        default: "main"
+
+env:
+  AWS_REGION: sa-east-1
+  ENVIRONMENT: prod
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout selected branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build project
+        run: bun run build
+
+      - name: Create deployment package
+        run: |
+          zip -r my-accounts.zip . \
+            -x ".git/*" \
+            -x ".github/*" \
+            -x "infra/*" \
+            -x "tests/*" \
+            -x "src/*" \
+            -x "node_modules/@types/*" \
+            -x "*.md"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+
+      - name: Terraform Init
+        run: |
+          cd infra/prod
+          terraform init -input=false
+
+      - name: Terraform Apply (Bucket Only)
+        run: |
+          cd infra/prod
+          terraform apply -auto-approve -input=false -target=aws_s3_bucket.deploy \
+            -var="mongo_uri=${{ secrets.MONGO_URI_PROD }}" \
+            -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID_PROD }}" \
+            -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET_PROD }}"
+
+      - name: Upload to S3
+        run: |
+          aws s3 cp my-accounts.zip s3://my-accounts-prod-deploy/deploy/my-accounts.zip
+
+      - name: Terraform Apply (Full)
+        run: |
+          cd infra/prod
+          terraform apply -auto-approve -input=false \
+            -var="mongo_uri=${{ secrets.MONGO_URI_PROD }}" \
+            -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID_PROD }}" \
+            -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET_PROD }}"
+
+      - name: Update Lambda function
+        run: |
+          aws lambda update-function-code \
+            --function-name my-accounts-prod-api \
+            --s3-bucket my-accounts-prod-deploy \
+            --s3-key deploy/my-accounts.zip \
+            --region ${{ env.AWS_REGION }}
