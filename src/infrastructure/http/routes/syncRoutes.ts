@@ -31,17 +31,11 @@ export const syncApi = (db: Db) => {
             const body = SyncRequestSchema.parse(req.body);
             const { lastSyncTimestamp, changes, userId } = body;
 
-            // 1. Apply changes from mobile
             if (changes) {
                 const transactionsToUpsert = [
                     ...(changes.created || []),
                     ...(changes.updated || [])
                 ];
-
-                // For deleted items, if mobile sends just IDs, we need to handle it.
-                // But if mobile sends objects with deletedAt, they are in 'updated' list usually.
-                // Let's assume mobile sends full objects for now as per our soft delete plan.
-                // If mobile sends explicit 'deleted' list of IDs, we handle them:
                 if (changes.deleted && changes.deleted.length > 0) {
                     for (const id of changes.deleted) {
                         await repo.delete(id);
@@ -52,7 +46,6 @@ export const syncApi = (db: Db) => {
                     await repo.batchUpsert(transactionsToUpsert);
                 }
 
-                // Apply category changes from mobile
                 if (changes.categories) {
                     const categoriesToUpsert = [
                         ...(changes.categories.created || []),
@@ -71,12 +64,10 @@ export const syncApi = (db: Db) => {
                 }
             }
 
-            // 2. Fetch changes from server
             const since = lastSyncTimestamp ? new Date(lastSyncTimestamp) : new Date(0);
             const serverTransactionChanges = await repo.findChanges(since, userId);
             const serverCategoryChanges = await categoryRepo.findChanges(since);
 
-            // 3. Return response
             res.json({
                 timestamp: new Date().toISOString(),
                 changes: {

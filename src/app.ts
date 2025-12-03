@@ -6,10 +6,6 @@ import { createApp } from "./infrastructure/http/expressServer";
 
 let cachedDb: Db | null = null;
 
-/**
- * Get or create MongoDB connection
- * Reuses connection for Lambda container reuse
- */
 async function getDatabase(): Promise<Db> {
   if (cachedDb) {
     return cachedDb;
@@ -32,7 +28,6 @@ async function getDatabase(): Promise<Db> {
 }
 
 /**
- * Create and configure Express application
  * This is used by both the local server and Lambda handler
  */
 export async function getApp(): Promise<Application> {
@@ -41,7 +36,7 @@ export async function getApp(): Promise<Application> {
 }
 
 /**
- * For local development - export a synchronous version
+ * For local development - exports a synchronous version
  */
 export function createAppSync(db: Db): Application {
   return createApp(db);

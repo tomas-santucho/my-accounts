@@ -1,6 +1,6 @@
-import { CognitoJwtVerifier } from "aws-jwt-verify";
-import { Request, Response, NextFunction } from "express";
-import { z } from "zod";
+import {CognitoJwtVerifier} from "aws-jwt-verify";
+import {NextFunction, Request, Response} from "express";
+import {z} from "zod";
 
 const envSchema = z.object({
     COGNITO_USER_POOL_ID: z.string(),
@@ -48,8 +48,7 @@ export const requireAuth = async (req: AuthenticatedRequest, res: Response, next
     }
 
     try {
-        const payload = await verifier.verify(token);
-        req.user = payload;
+        req.user = await verifier.verify(token);
         next();
     } catch (err) {
         console.error("Token verification failed:", err);

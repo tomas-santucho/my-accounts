@@ -82,6 +82,5 @@ resource "aws_cognito_user_pool_client" "expo" {
   callback_urls = var.expo_redirect_uris
   logout_urls   = var.expo_logout_uris
 
-  # Prevent user existence errors to avoid username enumeration
   prevent_user_existence_errors = "ENABLED"
 }

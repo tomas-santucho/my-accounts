@@ -10,7 +10,6 @@ const toDate = (value: any): Date => {
     }
     if (typeof value === 'string' || typeof value === 'number') {
         const date = new Date(value);
-        // Check if the date is valid
         if (!isNaN(date.getTime())) {
             return date;
         }

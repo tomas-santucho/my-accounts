@@ -65,7 +65,7 @@ export const categoryApi = (db: Db) => {
             const updatedCategory = CategorySchema.parse({
                 ...existing,
                 ...body,
-                id: id, // Ensure ID doesn't change
+                id: id,
             });
 
             await repo.update(updatedCategory);

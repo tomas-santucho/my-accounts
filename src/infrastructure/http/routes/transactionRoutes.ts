@@ -49,8 +49,6 @@ export const transactionApi = (db: Db) => {
     router.post("/transactions", async (req, res, next) => {
         try {
             const body = req.body;
-            // Validate input using a partial schema or just manual extraction
-            // We use createTransaction helper which validates internally
             const transaction = createTransaction(
                 body.userId,
                 body.type,
@@ -85,7 +83,6 @@ export const transactionApi = (db: Db) => {
             }
 
             const body = req.body;
-            // Merge existing with updates
             const updatedTransaction = TransactionSchema.parse({
                 ...existing,
                 ...body,

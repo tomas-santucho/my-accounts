@@ -16,8 +16,6 @@ export const createApp = (db: Db): Application => {
     const app = express();
 
     app.set('trust proxy', true);
-
-    // CORS configuration - must be before other middleware
     app.use(cors({
         origin: '*',
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -40,26 +38,6 @@ export const createApp = (db: Db): Application => {
 
     app.get("/users/:userid", function (req) {
         parseInt(req.params.userid, 10);
-    });
-
-    var photoPath = path.resolve(__dirname, "offensive-photos-folder");
-    app.use("/offensive", express.static(photoPath));
-
-    app.get(/^\/users\/(\d+)$/, function (req, res) {
-        // @ts-ignore
-        var userId = parseInt(req.params[0], 10);
-    });
-    app.get(/^\/users\/(\d+)-(\d+)$/, function (req, res) {
-        // @ts-ignore
-        var startId = parseInt(req.params[0], 10);
-        // @ts-ignore
-        var endId = parseInt(req.params[1], 10);
-
-    });
-
-    app.get("/search", function (req, res) {
-        // req.query.q == "javascript-themed burrito"
-        // ...
     });
 
     app.use((_, response) => {
