@@ -1,27 +1,21 @@
-name: Manual Deploy to AWS Lambda (Prod)
+name: Deploy to AWS Lambda (Dev)
 
 on:
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: "Branch to deploy to PROD"
-        required: true
-        type: string
-        default: "main"
+  push:
+    branches:
+      - "release/*"
 
 env:
   AWS_REGION: sa-east-1
-  ENVIRONMENT: prod
+  ENVIRONMENT: dev
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout selected branch
+      - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.branch }}
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -59,33 +53,33 @@ jobs:
 
       - name: Terraform Init
         run: |
-          cd infra/prod
+          cd infra/dev
           terraform init -input=false
 
       - name: Terraform Apply (Bucket Only)
         run: |
-          cd infra/prod
+          cd infra/dev
           terraform apply -auto-approve -input=false -target=aws_s3_bucket.deploy \
-            -var="mongo_uri=${{ secrets.MONGO_URI_PROD }}" \
-            -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID_PROD }}" \
-            -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET_PROD }}"
+            -var="mongo_uri=${{ secrets.MONGO_URI_DEV }}" \
+            -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID_DEV }}" \
+            -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET_DEV }}"
 
       - name: Upload to S3
         run: |
-          aws s3 cp my-accounts.zip s3://my-accounts-prod-deploy/deploy/my-accounts.zip
+          aws s3 cp my-accounts.zip s3://my-accounts-dev-deploy/deploy/my-accounts.zip
 
       - name: Terraform Apply (Full)
         run: |
-          cd infra/prod
+          cd infra/dev
           terraform apply -auto-approve -input=false \
-            -var="mongo_uri=${{ secrets.MONGO_URI_PROD }}" \
-            -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID_PROD }}" \
-            -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET_PROD }}"
+            -var="mongo_uri=${{ secrets.MONGO_URI_DEV }}" \
+            -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID_DEV }}" \
+            -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET_DEV }}"
 
       - name: Update Lambda function
         run: |
           aws lambda update-function-code \
-            --function-name my-accounts-prod-api \
-            --s3-bucket my-accounts-prod-deploy \
+            --function-name my-accounts-dev-api \
+            --s3-bucket my-accounts-dev-deploy \
             --s3-key deploy/my-accounts.zip \
             --region ${{ env.AWS_REGION }}

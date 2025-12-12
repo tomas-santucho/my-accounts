@@ -4,7 +4,7 @@ provider "aws" {
 
 locals {
   project_name = "my-accounts"
-  environment  = "dev"
+  environment  = "prod"
 }
 
 data "aws_region" "current" {}
@@ -158,3 +158,5 @@ resource "aws_apigatewayv2_stage" "default" {
     ManagedBy   = "Terraform"
   }
 }
+
+

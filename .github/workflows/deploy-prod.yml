@@ -1,13 +1,9 @@
-name: Manual Deploy to AWS Lambda (Prod)
+name: Deploy to AWS Lambda (Prod)
 
 on:
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: "Branch to deploy to PROD"
-        required: true
-        type: string
-        default: "main"
+  push:
+    branches:
+      - "main"
 
 env:
   AWS_REGION: sa-east-1
@@ -18,10 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout selected branch
+      - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.branch }}
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
