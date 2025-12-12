@@ -4,11 +4,11 @@ import { getEnvOrThrow } from "env-utils-js";
 import { createApp } from "./infrastructure/http/expressServer";
 
 
-let cachedDb: Db | null = null;
+let cachedClient: MongoClient | null = null;
 
-async function getDatabase(): Promise<Db> {
-  if (cachedDb) {
-    return cachedDb;
+async function getMongoClient() {
+  if (cachedClient) {
+    return cachedClient;
   }
 
   const mongoUrl = getEnvOrThrow('MONGO_URI');
@@ -22,16 +22,16 @@ async function getDatabase(): Promise<Db> {
   });
 
   await client.connect();
-  cachedDb = client.db();
-
-  return cachedDb;
+  cachedClient = client;
+  return client;
 }
 
 /**
  * This is used by both the local server and Lambda handler
  */
 export async function getApp(): Promise<Application> {
-  const db = await getDatabase();
+  const client = await getMongoClient();
+  const db = client.db();
   return createApp(db);
 }
 
