@@ -45,6 +45,7 @@ export const createTransaction = (
         date,
         createdAt: new Date(),
         updatedAt: new Date(),
+        deletedAt: null,
     };
 
     return TransactionSchema.parse(transaction);

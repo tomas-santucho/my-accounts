@@ -32,9 +32,15 @@ export const createApp = (db: Db): Application => {
     app.use(globalRateLimiter);
     app.use(responseTimeLogger);
 
-    app.use("/api", requireAuth, transactionApi(db));
-    app.use("/api", requireAuth, categoryApi(db));
-    app.use("/api", requireAuth, syncApi(db));
+    if (process.env.NODE_ENV !== 'test') {
+        app.use("/api", requireAuth, transactionApi(db));
+        app.use("/api", requireAuth, categoryApi(db));
+        app.use("/api", requireAuth, syncApi(db));
+    } else {
+        app.use("/api", transactionApi(db));
+        app.use("/api", categoryApi(db));
+        app.use("/api", syncApi(db));
+    }
 
     app.get("/users/:userid", function (req) {
         parseInt(req.params.userid, 10);

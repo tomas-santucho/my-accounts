@@ -8,7 +8,13 @@ let app: Application;
 
 beforeAll(() => {
   // The / route doesn't use the db, so we can pass a mock/dummy object.
-  const mockDb = {} as Db;
+  const mockDb = {
+    collection: () => ({
+      find: () => ({
+        toArray: () => Promise.resolve([]),
+      }),
+    }),
+  } as unknown as Db;
   app = createApp(mockDb);
 });
 
@@ -16,6 +22,6 @@ describe('GET /', () => {
   it('should return "Hello TypeScript + Express!"', async () => {
     const response = await request(app).get('/');
     expect(response.status).toBe(200);
-    expect(response.text).toBe('Hello TypeScript + Express!');
+    expect(response.text).toBe('My Accounts 0.7.3');
   });
 });
