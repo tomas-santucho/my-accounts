@@ -7,10 +7,13 @@ import { createApp } from "./infrastructure/http/expressServer";
 let cachedClient: MongoClient | null = null;
 
 async function getMongoClient() {
+  console.log("getMongoClient: start");
   if (cachedClient) {
+    console.log("getMongoClient: returning cached client");
     return cachedClient;
   }
 
+  console.log("getMongoClient: no cached client, creating new one");
   const mongoUrl = getEnvOrThrow('MONGO_URI');
 
   const client = new MongoClient(mongoUrl, {
@@ -21,7 +24,9 @@ async function getMongoClient() {
     }
   });
 
+  console.log("getMongoClient: connecting to mongo");
   await client.connect();
+  console.log("getMongoClient: mongo connected");
   cachedClient = client;
   return client;
 }
@@ -30,9 +35,19 @@ async function getMongoClient() {
  * This is used by both the local server and Lambda handler
  */
 export async function getApp(): Promise<Application> {
+  console.log("getApp: start");
+
+  console.log("getApp: before mongo");
   const client = await getMongoClient();
   const db = client.db();
-  return createApp(db);
+  console.log("getApp: after mongo");
+
+  console.log("getApp: before createApp");
+  const app = createApp(db);
+  console.log("getApp: after createApp");
+
+  console.log("getApp: done");
+  return app;
 }
 
 /**
